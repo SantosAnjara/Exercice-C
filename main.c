@@ -41,19 +41,29 @@ void afficher(const Tableau *t){ // const signifie que la fonction ne modifie pa
 
 int ajouter(Tableau *t, int valeur)
 {
-    int i = t->taille - 1; // [la taille - 1 c'est l'indice]
     if (t->taille == t->capacite){
-        int *nouveau = realloc(t->donnees, (t->capacite + 1) * sizeof(*nouveau));
+        int nouvelle_capacite = t->capacite == 0 ? 1 : t->capacite * 2 ; //On double pour éviter de faire plusieurs realloc à chaque ajout
+        int *nouveau = realloc(t->donnees,  nouvelle_capacite * sizeof(*nouveau));
         if (nouveau == NULL){
             return 1;
         }
         t->donnees = nouveau;
-        t->capacite += 1;
+        t->capacite = nouvelle_capacite;
          // la valeur augmente
-        t->donnees[i] = valeur;
     }
-        t->donnees[t->taille] = valeur; //  taille représentait une case vide
+        //  taille représente une case vide
+        t->donnees[t->taille] = valeur;
         t->taille += 1;
+    return 0;
+}
+
+void liberer(Tableau *t){
+    if (t == NULL){
+        return;
+    }
+    free(t->donnees);
+    free(t);
+
 }
 
 
@@ -68,6 +78,9 @@ int main(void)
     printf("=======\n");
     ajouter(t, 2);
     afficher(t);
+
+    liberer(t);
+    t = NULL;
 
     return 0;
 }
