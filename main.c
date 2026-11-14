@@ -84,6 +84,19 @@ int supprimer_dernier(Tableau *t){
 }
 
 
+int obtenir(const Tableau *t, int indice, int *resultat){
+    if (t == NULL || resultat == NULL){
+        return 1;
+    }
+    if (indice < 0 || indice >= t->taille){
+        return 1;
+    }
+    *resultat = t->donnees[indice];
+
+    return 0;
+}
+
+
 int main(void)
 {
     Tableau *t = creer(3);
@@ -93,16 +106,20 @@ int main(void)
 //    t->taille = 2;
     ajouter(t, 2);
     ajouter(t, 4);
+    ajouter(t, 667);
+    ajouter(t, 62);
 
     supprimer_dernier(t);
     ajouter(t, 3);
 
-    supprimer_dernier(t);
-
     afficher(t);
+    int res;
+    if (obtenir(t, -6, &res) == 0){
+        printf("%d\n", res);
+    }else printf("indice refuse\n");
+
 
     liberer(t);
     t = NULL;
-
     return 0;
 }
