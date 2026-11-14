@@ -41,6 +41,9 @@ void afficher(const Tableau *t){ // const signifie que la fonction ne modifie pa
 
 int ajouter(Tableau *t, int valeur)
 {
+    if (t == NULL){
+        return 1;
+    }
     if (t->taille == t->capacite){
         int nouvelle_capacite = t->capacite == 0 ? 1 : t->capacite * 2 ; //On double pour éviter de faire plusieurs realloc à chaque ajout
         int *nouveau = realloc(t->donnees,  nouvelle_capacite * sizeof(*nouveau));
@@ -67,16 +70,35 @@ void liberer(Tableau *t){
 }
 
 
+int supprimer_dernier(Tableau *t){
+    if (t == NULL){
+        return 1;
+    }
+    if (t->taille == 0){
+        return 1;
+    }
+    t->donnees[t->taille - 1] = 0;// taille - 1 représente le dernier élément
+    t->taille -= 1; // cela implique une réduction de la taille
+
+    return 0;
+}
+
+
 int main(void)
 {
     Tableau *t = creer(3);
 
-    t->donnees[0] = 10;
-    t->donnees[1] = 20;
-    t->taille = 2;
-    afficher(t);
-    printf("=======\n");
+//    t->donnees[0] = 10;
+//    t->donnees[1] = 20;
+//    t->taille = 2;
     ajouter(t, 2);
+    ajouter(t, 4);
+
+    supprimer_dernier(t);
+    ajouter(t, 3);
+
+    supprimer_dernier(t);
+
     afficher(t);
 
     liberer(t);
