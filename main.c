@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define CAPACITE_MAX 100000000 // 100 millions d'éléments
+
 typedef struct{
     int *donnees;
     int taille; // nombre d'élément réellement stockés
@@ -9,6 +11,9 @@ typedef struct{
 
 
 Tableau *creer(int capacite_initiale){
+    if (capacite_initiale <= 0 || capacite_initiale > CAPACITE_MAX ){
+        return NULL;
+    }
     // réserve une place pour 1 tableau , un struct n'existe pas en mémoire
     Tableau *t = malloc(sizeof(*t));
     if (t == NULL){
@@ -44,8 +49,17 @@ int ajouter(Tableau *t, int valeur)
     if (t == NULL){
         return 1;
     }
+    if (t->capacite >= CAPACITE_MAX){
+        return 1;
+    }
+
     if (t->taille == t->capacite){
         int nouvelle_capacite = t->capacite == 0 ? 1 : t->capacite * 2 ; //On double pour éviter de faire plusieurs realloc à chaque ajout
+        if (t->capacite > CAPACITE_MAX)
+        {
+            t->capacite =  CAPACITE_MAX;
+        }
+
         int *nouveau = realloc(t->donnees,  nouvelle_capacite * sizeof(*nouveau));
         if (nouveau == NULL){
             return 1;
@@ -66,7 +80,6 @@ void liberer(Tableau *t){
     }
     free(t->donnees);
     free(t);
-
 }
 
 
@@ -77,7 +90,7 @@ int supprimer_dernier(Tableau *t){
     if (t->taille == 0){
         return 1;
     }
-    t->donnees[t->taille - 1] = 0;// taille - 1 représente le dernier élément
+    t->donnees[t->taille - 1] = 0; // taille - 1 représente le dernier élément
     t->taille -= 1; // cela implique une réduction de la taille
 
     return 0;
@@ -101,9 +114,6 @@ int main(void)
 {
     Tableau *t = creer(3);
 
-//    t->donnees[0] = 10;
-//    t->donnees[1] = 20;
-//    t->taille = 2;
     ajouter(t, 2);
     ajouter(t, 4);
     ajouter(t, 667);
